@@ -1,0 +1,23 @@
+{
+  "name": "hackernews-node",
+  "version": "1.0.0",
+  "description": "hackernews-node graphql tutorial",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lfdantoni/hackernews-node.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lfdantoni/hackernews-node/issues"
+  },
+  "homepage": "https://github.com/lfdantoni/hackernews-node#readme",
+  "dependencies": {
+    "graphql-yoga": "^1.18.3"
+  }
+}
