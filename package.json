@@ -4,8 +4,9 @@
   "description": "hackernews-node graphql tutorial",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon --experimental-modules --es-module-specifier-resolution=node src/index.js"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lfdantoni/hackernews-node.git"
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/lfdantoni/hackernews-node#readme",
   "dependencies": {
     "graphql-yoga": "^1.18.3",
+    "mongoose": "^5.7.12",
     "nodemon": "^2.0.1"
   }
 }

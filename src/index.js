@@ -1,49 +1,42 @@
-const { GraphQLServer } = require('graphql-yoga')
+import  GraphQLYoga from 'graphql-yoga'
+import {Links} from './db'
 
-let links = [{
-  id: 'link-0',
-  url: 'www.howtographql.com',
-  description: 'Fullstack tutorial for GraphQL'
-}]
-let idCount = links.length
+const {GraphQLServer} = GraphQLYoga
 
 const resolvers = {
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
-    feed: () => links,
-    link: (parent, args) => {
-      return links.find(link => link.id === args.id);
+    feed: async() => await Links.find(),
+    link: async (parent, args) => {
+      return await Links.findById(args.id);
     }
   },
+  Link: {
+    id: (parent) => parent._id.toString()
+  },
   Mutation: {
-    post: (parent, args) => {
-       const link = {
-        id: `link-${idCount++}`,
+    post: async (parent, args) => {
+       const link = new Links({
         description: args.description,
         url: args.url,
-      }
-      links.push(link)
+      })
+      await link.save()
       return link
     },
-    updateLink(parent, args) {
-      const link = links.find(link => link.id === args.id);
-      if(link) {
-        link.description = args.description || link.description;
-        link.url = args.url || link.url;
+    updateLink: async(parent, args) => {
+      const link = await Links.findById(args.id);
 
-        return link;
+      if(link) {
+        link.url = args.url || link.url
+        link.description = args.description || link.description
+        await link.save()
+        return link
       }
+
       return null;
     },
-    deleteLink(parent, args) {
-      const linkIdx = links.findIndex(link => link.id === args.id);
-      if(linkIdx >= 0) {
-        const link = links[linkIdx];
-        links.splice(linkIdx, 1);
-
-        return link;
-      }
-      return null;
+    deleteLink: async (parent, args) => {
+      return await Links.findByIdAndRemove(args.id);
     }
   }
 }
