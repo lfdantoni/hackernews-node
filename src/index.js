@@ -1,48 +1,29 @@
 import  GraphQLYoga from 'graphql-yoga'
-import {Links} from './db'
+import * as Entities from './db'
+import * as Mutation from './resolvers/Mutation'
+import * as Query from './resolvers/Query'
+import * as User from './resolvers/User'
+import * as Link from './resolvers/Link'
 
 const {GraphQLServer} = GraphQLYoga
 
+
 const resolvers = {
-  Query: {
-    info: () => `This is the API of a Hackernews Clone`,
-    feed: async() => await Links.find(),
-    link: async (parent, args) => {
-      return await Links.findById(args.id);
-    }
-  },
-  Link: {
-    id: (parent) => parent._id.toString()
-  },
-  Mutation: {
-    post: async (parent, args) => {
-       const link = new Links({
-        description: args.description,
-        url: args.url,
-      })
-      await link.save()
-      return link
-    },
-    updateLink: async(parent, args) => {
-      const link = await Links.findById(args.id);
-
-      if(link) {
-        link.url = args.url || link.url
-        link.description = args.description || link.description
-        await link.save()
-        return link
-      }
-
-      return null;
-    },
-    deleteLink: async (parent, args) => {
-      return await Links.findByIdAndRemove(args.id);
-    }
-  }
+  Query,
+  Mutation,
+  User,
+  Link
 }
 
 const server = new GraphQLServer({
   typeDefs: './src/schemas/schema.graphql',
   resolvers,
+  context: request => {
+    return {
+      ...request,
+      db: Entities,
+      test: 'test context variable!'
+    }
+  }
 })
 server.start(() => console.log(`Server is running on http://localhost:4000`))

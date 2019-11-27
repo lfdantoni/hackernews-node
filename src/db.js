@@ -6,15 +6,27 @@ mongoose.connect(MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true, us
     .then(() => console.log('DB Connected'))
     .catch((error) => console.log('DB connected error', error))
 
-var linkSchema = new mongoose.Schema({
+mongoose.set('useCreateIndex', true)
+
+const linkSchema = new mongoose.Schema({
     description: {type: String, required: true},
-    url: String
+    url: String,
+    postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 });
 
+const userSchema = new mongoose.Schema({
+    name: {type: String, required: true},
+    email: {type: String, required: true, unique: true},
+    password: {type: String, required: true},
+    links: {type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Link' }], default: []}
+})
+
 var Links = mongoose.model('Link', linkSchema);
+var Users = mongoose.model('User', userSchema);
 
 export {
-    Links
+    Links,
+    Users
 }
 
 
